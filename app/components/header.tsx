@@ -130,7 +130,7 @@ const Header = () => {
   };
 
   const navigation = [
-    { name: "Home", href: "http://localhost:3000/" },
+    { name: "Home", href: "/" },
     { name: "Top wears", href: "/top" },
     { name: "Request", href: "/request" },
     { name: "My order", href: "/orders" },

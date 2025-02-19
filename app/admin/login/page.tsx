@@ -39,7 +39,7 @@ const Page = () => {
       }
     } else {
       // Redirect to admin home page if successful
-      router.push("http://localhost:3000/admin");
+      router.push("/admin");
     }
   };
 
