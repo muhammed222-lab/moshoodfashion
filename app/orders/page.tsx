@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Header from "../components/header";
 import { supabase } from "../../lib/supabaseClient";
 
@@ -19,50 +19,64 @@ const OrdersPage = () => {
   }
 
   const [orders, setOrders] = useState<Order[]>([]);
-  const [, setUserEmail] = useState<string>("");
 
   useEffect(() => {
     const fetchOrdersAndUser = async () => {
-      // Get logged-in user's session
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
+      try {
+        // Get logged-in user's session
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.user) return;
+
         const email = session.user.email;
-        setUserEmail(email || "");
-        // Fetch orders where customer_email matches the logged in email
+
+        // Fetch orders where customer_email matches the logged-in email
         const { data, error } = await supabase
           .from("orders")
-          .select("*")
+          .select("id, order_date, total_amount, status, order_items")
           .eq("customer_email", email);
-        if (error) {
-          console.error("Error fetching orders:", error);
-        } else {
-          setOrders(data || []);
-        }
+
+        if (error) throw error;
+
+        // Ensure `order_items` is parsed correctly
+        const parsedOrders = data?.map((order) => ({
+          ...order,
+          order_items:
+            typeof order.order_items === "string"
+              ? JSON.parse(order.order_items)
+              : order.order_items || [],
+        }));
+
+        setOrders(parsedOrders || []);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
       }
     };
+
     fetchOrdersAndUser();
   }, []);
 
-  const cancelOrder = async (orderId: number) => {
-    // Update order status to 'cancelled'
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: "cancelled" })
-      .eq("id", orderId);
+  const cancelOrder = useCallback(async (orderId: number) => {
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status: "cancelled" })
+        .eq("id", orderId);
 
-    if (error) {
-      console.error("Error cancelling order:", error);
-    } else {
+      if (error) throw error;
+
       // Update local state after cancellation
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === orderId ? { ...order, status: "cancelled" } : order
         )
       );
+    } catch (err) {
+      console.error("Error cancelling order:", err);
     }
-  };
+  }, []);
 
   return (
     <>
@@ -74,12 +88,10 @@ const OrdersPage = () => {
         ) : (
           <div className="grid gap-6">
             {orders.map((order) => {
-              // Determine the primary image to use:
+              // Determine the primary image to use
               const primaryImage =
-                order.order_items &&
-                Array.isArray(order.order_items) &&
-                order.order_items.length > 0
-                  ? order.order_items[0].image
+                order.order_items?.length > 0
+                  ? order.order_items[0]?.image || "/placeholder.jpg"
                   : "/placeholder.jpg";
 
               return (
@@ -112,7 +124,7 @@ const OrdersPage = () => {
                     <p>
                       <strong>Total Amount:</strong>{" "}
                       {order.total_amount ? (
-                        order.total_amount
+                        `₦${order.total_amount}`
                       ) : (
                         <span className="text-red-500">Empty</span>
                       )}
@@ -127,11 +139,9 @@ const OrdersPage = () => {
                     </p>
                     <div className="mt-2">
                       <strong>Items:</strong>
-                      {order.order_items &&
-                      Array.isArray(order.order_items) &&
-                      order.order_items.length > 0 ? (
+                      {order.order_items?.length > 0 ? (
                         <ul className="mt-2 space-y-2">
-                          {order.order_items.map((item: any, index: number) => (
+                          {order.order_items.map((item, index) => (
                             <li
                               key={index}
                               className="flex items-center space-x-3"
