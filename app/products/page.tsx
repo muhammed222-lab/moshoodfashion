@@ -1,16 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ProductCard from "./components/products";
-import Header from "./components/header";
-import Showcase from "./components/showcase";
-import { supabase } from "../lib/supabaseClient";
+import ProductCard from "../components/products";
+import Header from "../components/header";
+import { supabase } from "../../lib/supabaseClient";
 
 export default function Home() {
   interface Product {
     id: number;
     name: string;
+    description: string;
     price: number;
-    // Add other product properties here
+    created_at: string;
   }
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -36,7 +36,6 @@ export default function Home() {
     <div className="min-h-screen bg-gray-100">
       <Header />
       <div className="container mx-auto px-4 py-10 mt-12">
-        <Showcase />
         <h1 className="text-center text-3xl font-bold mb-8">Our Products</h1>
         {loading ? (
           <p className="text-center">Loading products...</p>
