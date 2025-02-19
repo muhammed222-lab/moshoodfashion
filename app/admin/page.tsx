@@ -46,7 +46,7 @@ export default function AddProductPage() {
       if (session?.user) {
         setUserId(session.user.id);
       } else {
-        router.push("/login");
+        router.push("/admin/login");
       }
     }
     getSession();
