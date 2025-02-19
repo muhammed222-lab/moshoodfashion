@@ -86,7 +86,7 @@ export async function POST(request: Request) {
             <p style="font-size:16px; color:#555; margin-bottom:12px;">Price: NGN ${Number(
               product.price
             ).toLocaleString()}</p>
-            <a href="https://moshoodfashion.store/product" style="display:inline-block; padding:12px 20px; background:linear-gradient(135deg, #3b82f6, #60a5fa); color:#fff; text-decoration:none; border-radius:6px; font-size:16px;">
+            <a href="https://moshoodfashion.store/products" style="display:inline-block; padding:12px 20px; background:linear-gradient(135deg, #3b82f6, #60a5fa); color:#fff; text-decoration:none; border-radius:6px; font-size:16px;">
               Check it out
             </a>
           </div>`;
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
             ${productCardsHTML}
           </div>
           <p style="font-size:14px; text-align:center; color:#777; margin-top:30px;">
-            Explore more at our <a href="https://moshoodfashion.store/product" style="color:#3b82f6; text-decoration:none; font-weight:bold;">products page</a>.
+            Explore more at our <a href="https://moshoodfashion.store/products" style="color:#3b82f6; text-decoration:none; font-weight:bold;">products page</a>.
           </p>
         </div>
         <div style="background:#f7f7f7; padding:15px; text-align:center; font-size:12px; color:#aaa;">
