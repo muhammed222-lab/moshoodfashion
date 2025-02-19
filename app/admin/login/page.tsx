@@ -39,7 +39,7 @@ const Page = () => {
       }
     } else {
       // Redirect to admin home page if successful
-      router.push("https://www.moshoodfashion.store/admin");
+      router.push("moshoodfashion.store/admin");
     }
   };
 
