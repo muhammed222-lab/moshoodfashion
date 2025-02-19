@@ -163,11 +163,12 @@ const Header = () => {
       <header className="relative bg-white/80 backdrop-blur-md shadow-sm fix">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between lg:justify-normal lg:space-x-8">
-            <a href="/">
-              <div className="flex-shrink-0">
-                <span className="text-xl font-serif tracking-tight">MFH</span>
-              </div>
-            </a>
+            <div
+              className="flex-shrink-0 cursor-pointer"
+              onClick={() => (window.location.href = "/")}
+            >
+              <span className="text-xl font-serif tracking-tight">MFH</span>
+            </div>
 
             <nav className="hidden lg:flex space-x-8">
               {navigation.map((item) => (
